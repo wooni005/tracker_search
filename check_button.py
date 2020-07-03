@@ -2,9 +2,10 @@ from tkinter import Checkbutton, IntVar
 
 
 class classCheckButton:
-    def __init__(self, frame, checkButtonName, callback):
+    def __init__(self, frame, filter, checkButtonName, callback):
         self.var = IntVar(value=1)
         self.checkButtonName = checkButtonName
+        self.filter = filter
         self._callback = callback
         checkbutton = Checkbutton(
             frame, text=self.checkButtonName,
@@ -13,7 +14,7 @@ class classCheckButton:
         checkbutton.pack(anchor="w")
 
     def get(self):
-        return self.var
+        return self.var.get()
 
     def eventCheckButton(self):
         print("%s: checkButton=%d" % (self.checkButtonName, self.var.get()))

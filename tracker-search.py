@@ -5,14 +5,14 @@ from tkinter import ttk
 import time
 
 import config
-import search_tracker
+import search
 import window
 import multi_listbox
 import sidebar
 
-search = None
-win = None
-sideBar = None
+# search = None
+# win = None
+# sideBar = None
 
 
 # Event when moving/resizing the application window
@@ -58,10 +58,10 @@ win = window.Window(okButtonClickCallback)
 # Setup the multicolumn ListBox
 multiListbox = multi_listbox.MultiListbox(win.mainFrame)
 
-# Setup the sidebars to filter results
-sideBar = sidebar.Sidebar(config, win)
-
 # Setup the tracker search
-search = search_tracker.SearchTracker(multiListbox.tree)
+search = search.Search(multiListbox.tree)
+
+# Setup the sidebars to filter results
+sideBar = sidebar.Sidebar(config, win, search.setSearchFilters)
 
 root.mainloop()
