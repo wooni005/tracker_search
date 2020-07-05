@@ -4,11 +4,11 @@ from tkinter import ttk
 
 import time
 
-import config
-import search
-import window
-import multi_listbox
-import sidebar
+from src import config
+from src import search
+from src import window
+from src import multi_listbox
+from src import sidebar
 
 # search = None
 # win = None
@@ -40,7 +40,7 @@ def keypressCallback(event):
 root = tk.Tk(className="Tracker Search")
 root.title("Tracker Search")
 config = config.Config(root)
-img = tk.Image("photo", file="/home/arjan/Documenten/Gitea/Python/Tracker-Search/icons/tracker-search.png")
+img = tk.Image("photo", file="/home/arjan/Documenten/Gitea/Python/tracker_search/icons/tracker_search.png")
 root.tk.call('wm', 'iconphoto', root._w, img)
 
 # Recall stored window geometry settings

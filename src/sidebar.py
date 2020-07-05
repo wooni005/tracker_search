@@ -1,4 +1,4 @@
-import check_button
+from src import check_button
 
 docCheckButtons = []
 searchAreaCheckButtons = []
