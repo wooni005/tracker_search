@@ -1,4 +1,3 @@
-from tkinter import Checkbutton, IntVar
 from tkinter import ttk
 import tkinter.font as tkFont
 import os

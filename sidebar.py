@@ -1,4 +1,3 @@
-from tkinter import Checkbutton, IntVar
 import check_button
 
 docCheckButtons = []
@@ -24,7 +23,7 @@ class Sidebar:
         for searchArea, searchAreaPath in searchAreas:
             print("%s: %s" % (searchArea, searchAreaPath))
             searchAreaCheckButtons.append(check_button.classCheckButton(self.frame.sidebarBottom, searchAreaPath, searchArea, self.applySearchFilter))
-        
+
         self.applySearchFilter()
 
     def applySearchFilter(self):

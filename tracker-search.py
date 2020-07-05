@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from tkinter import Tk, Entry, Button, Frame, Checkbutton, IntVar
+import tkinter as tk
 from tkinter import ttk
 
 import time
@@ -37,10 +37,11 @@ def keypressCallback(event):
         print("Other key pressed:" + event)
 
 
-root = Tk()
-root.title("Tracker Search GUI")
-
+root = tk.Tk(className="Tracker Search")
+root.title("Tracker Search")
 config = config.Config(root)
+img = tk.Image("photo", file="/home/arjan/Documenten/Gitea/Python/Tracker-Search/icons/tracker-search.png")
+root.tk.call('wm', 'iconphoto', root._w, img)
 
 # Recall stored window geometry settings
 root.geometry(config.config.get('geometry', 'size'))
@@ -64,4 +65,5 @@ search = search.Search(multiListbox.tree)
 # Setup the sidebars to filter results
 sideBar = sidebar.Sidebar(config, win, search.setSearchFilters)
 
-root.mainloop()
+if __name__ == '__main__': 
+    root.mainloop()

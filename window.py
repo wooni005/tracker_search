@@ -1,4 +1,3 @@
-from tkinter import Entry, Button, Frame
 from tkinter import ttk
 
 
@@ -13,15 +12,15 @@ class Window:
         self.mainFrame = ttk.Frame(self.panedWindow, width=400, height=400)
         self.mainFrame.pack(fill='both', expand=True)
 
-        self.searchBox = Entry(self.mainFrame)
+        self.searchBox = ttk.Entry(self.mainFrame)
         self.searchBox.focus_set()
         self.searchBox.grid(column=0, row=0, sticky='ew', in_=self.mainFrame)
 
-        self.okButton = Button(self.mainFrame, text="OK", width=10, command=self._okButtonClickCallback)
+        self.okButton = ttk.Button(self.mainFrame, text="OK", width=10, command=self._okButtonClickCallback)
         self.okButton.grid(column=1, row=0, sticky='e', in_=self.mainFrame)
 
-        self.sidebarTop = Frame(self.sidebar, width=200, height=200)
-        self.sidebarBottom = Frame(self.sidebar, width=200, height=200)
+        self.sidebarTop = ttk.Frame(self.sidebar, width=200, height=200)
+        self.sidebarBottom = ttk.Frame(self.sidebar, width=200, height=200)
 
         # add the paned window to the root
         self.panedWindow.pack(fill="both", expand=True)

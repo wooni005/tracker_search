@@ -1,13 +1,14 @@
-from tkinter import Checkbutton, IntVar
+import tkinter as tk
+from tkinter import ttk
 
 
 class classCheckButton:
     def __init__(self, frame, filter, checkButtonName, callback):
-        self.var = IntVar(value=1)
+        self.var = tk.IntVar(value=1)
         self.checkButtonName = checkButtonName
         self.filter = filter
         self._callback = callback
-        checkbutton = Checkbutton(
+        checkbutton = tk.Checkbutton(
             frame, text=self.checkButtonName,
             variable=self.var,
             command=self.eventCheckButton)
