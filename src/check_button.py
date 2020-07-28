@@ -1,23 +1,23 @@
-import tkinter as tk
-from tkinter import ttk
+from PySide2.QtWidgets import (QCheckBox)
 
 
 class classCheckButton:
-    def __init__(self, frame, filter, checkButtonName, callback):
-        self.var = tk.IntVar(value=1)
+    def __init__(self, layout, filter, checkButtonName, callback):
         self.checkButtonName = checkButtonName
+        self.layout = layout
         self.filter = filter
         self._callback = callback
-        checkbutton = tk.Checkbutton(
-            frame, text=self.checkButtonName,
-            variable=self.var,
-            command=self.eventCheckButton)
-        checkbutton.pack(anchor="w")
+        self.checkbutton = QCheckBox(text=self.checkButtonName)
+        self.checkbutton.setChecked(True)
+        self.stat = self.checkbutton.isChecked()
+        self.checkbutton.toggled.connect(lambda: self.eventCheckButton())
+        self.layout.addWidget(self.checkbutton)
 
     def get(self):
-        return self.var.get()
+        return self.checkbutton.isChecked()
 
     def eventCheckButton(self):
-        print("%s: checkButton=%d" % (self.checkButtonName, self.var.get()))
+        self.stat = self.checkbutton.isChecked()
+        print("%s: checkButton=%d" % (self.checkButtonName, self.checkbutton.isChecked()))
         if self._callback:
             self._callback()

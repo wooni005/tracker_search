@@ -4,13 +4,14 @@ from gi.repository import Tracker
 import os
 import sys
 # import time
+from PySide2.QtGui import QStandardItem
 
 
 class Search:
     searchIndex = []
 
-    def __init__(self, tree):
-        self.tree = tree
+    def __init__(self, model):
+        self.model = model
 
     def fileSizeFmt(num, suffix='B'):
         print(num)
@@ -23,7 +24,9 @@ class Search:
     def searchItems(self, searchStr):
         # start = time.time()
 
+        # Cleanup the search index
         self.searchIndex.clear()
+
         conn = Tracker.SparqlConnection.get(None)
         # cursor = conn.query("SELECT ?url fts:snippet(?r) ?type ?filename ?filesize ?modifiedDate fts:rank(?r) WHERE { ?r a nfo:Document ; nie:url ?url ; nie:mimeType ?type ; nfo:fileName ?filename ; nfo:fileSize ?filesize ; nfo:fileLastModified ?modifiedDate ;fts:match '%s' } ORDER BY DESC (fts:rank(?r))" % searchStr)
         cursor = conn.query("SELECT ?url fts:snippet(?r) ?filename ?filesize ?modifiedDate WHERE { ?r a nfo:Document ; nie:url ?url ; nfo:fileName ?filename ; nfo:fileSize ?filesize ; nfo:fileLastModified ?modifiedDate ;fts:match '%s' } ORDER BY ASC (?url)" % searchStr)
@@ -70,18 +73,16 @@ class Search:
         # start = time.time()
 
         # Clear the listbox for the new search items
-        for row in self.tree.get_children():
-            self.tree.delete(row)
+        self.model.setRowCount(0)
 
         for item in self.searchIndex:
             #item[2]: docFilter
             #item[4]: url
             if (item[2] in self.docFilter) and any(x in item[4] for x in self.areaFilter):
-                self.tree.insert('', 'end', values=item)
-                #adjust column's width if necessary to fit each value
-                # for ix, val in enumerate(currentItem):
-                #     col_w = tkFont.Font().measure(val)
-                #     if tree.column(searchListHeader[ix], width=None) < col_w:
-                #         tree.column(searchListHeader[ix], width=col_w)
+                row = []
+                for v in item:
+                    row.append(QStandardItem(v))
+                self.model.appendRow(row)
+
         # end = time.time()
         # print(end - start)

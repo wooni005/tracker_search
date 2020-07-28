@@ -1,69 +1,192 @@
-#!/usr/bin/python3
-import tkinter as tk
-from tkinter import ttk
-
+#!/usr/bin/env python
 import time
+import sys
+
+from PySide2.QtCore import Qt, QAbstractTableModel, QRect, QSettings
+from PySide2.QtGui import QStandardItemModel, QStandardItem
+from PySide2.QtWidgets import (QApplication, QMenu, QMainWindow, QHeaderView, QSplitter, QTableView, QGroupBox, QFrame, QVBoxLayout, QCheckBox, QHBoxLayout, QLabel, QLineEdit, QPushButton)
 
 from src import config
 from src import search
 from src import window
-from src import multi_listbox
 from src import sidebar
 
-# search = None
-# win = None
-# sideBar = None
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super(MainWindow, self).__init__()
+
+        fileMenu = QMenu("&File", self)
+        openAction = fileMenu.addAction("&Open...")
+        openAction.setShortcut("Ctrl+O")
+        saveAction = fileMenu.addAction("&Save As...")
+        saveAction.setShortcut("Ctrl+S")
+        quitAction = fileMenu.addAction("E&xit")
+        quitAction.setShortcut("Ctrl+Q")
+
+        self.config = config.Config()
+        self.setupModel()
+
+        # Setup the tracker search
+        self.search = search.Search(self.model)
+
+        self.setupViews()
+
+        # openAction.triggered.connect(self.openFile)
+        # saveAction.triggered.connect(self.saveFile)
+        quitAction.triggered.connect(QApplication.instance().quit)
+
+        self.menuBar().addMenu(fileMenu)
+        self.statusBar()
+        self.setWindowTitle("Tracker Search")
+        self.searchBoxLineEdit.setFocus()
+
+    def resizeEvent(self, event):
+        super(MainWindow, self).resizeEvent(event)
+        print("Window is resized:" + str(self.geometry()))
+        self.config.saveConfigfile({'size': self.rootWindow.geometry().getRect()})
+
+    def moveEvent(self, event):
+        super(MainWindow, self).moveEvent(event)
+        print("Window is moved:" + str(self.geometry()))
+        self.config.saveConfigfile({'size': self.rootWindow.geometry().getRect()})
+
+    def okButtonClicked(self):
+        self.searchBoxLineEdit.text()
+        print("Search for:" + self.searchBoxLineEdit.text())
+        self.search.searchItems(self.searchBoxLineEdit.text())
+
+    def setupModel(self):
+        self.model = QStandardItemModel(0, 6, self)
+        self.model.setHeaderData(0, Qt.Horizontal, "Filename")
+        self.model.setHeaderData(1, Qt.Horizontal, "Snippet")
+        self.model.setHeaderData(2, Qt.Horizontal, "Type")
+        self.model.setHeaderData(3, Qt.Horizontal, "Size")
+        self.model.setHeaderData(4, Qt.Horizontal, "Path")
+        self.model.setHeaderData(5, Qt.Horizontal, "Modified")
+
+    def setupViews(self):
+        self.createSidebarView()
+        self.createSearchAndTable()
+
+        # Setup main window horizontal split
+        self.mainLayout = QSplitter(Qt.Horizontal)
+        self.mainLayout.addWidget(self.sidebarGroup)
+        self.mainLayout.addWidget(self.searchAndTableSplit)
+
+        # Make left split fixed and right split variable
+        self.mainLayout.setStretchFactor(0, 0)
+        self.mainLayout.setStretchFactor(1, 1)
+
+        self.table.setModel(self.model)
+        # self.table.setColumnWidth(0, 50)
+        # self.table.setColumnWidth(2, 50)
+        # self.table.setColumnWidth(4, 50)
+        # self.table.setColumnWidth(5, 50)
+        self.resize(800, 500)
+        self.mainLayout.setSizes([150, 650])
+
+        # Table setup, which column is variable and which is fixed
+        self.table.horizontalHeader().setStretchLastSection(True)
+        self.table.setSortingEnabled(True)
+
+        # self.table.horizontalHeader().setResizeMode(0, QHeaderView.Stretch)
+
+        self.setCentralWidget(self.mainLayout)
+
+    def btnstate(self, state):
+        print("Button:" + str(state))
+
+    def createSidebarView(self):
+        # Setup sidebar
+        # self.sidebarGroup = QGroupBox()
+        self.sidebarGroup = QFrame()
+        self.sidebarGroup.setFrameStyle(QFrame.Panel | QFrame.Raised)
+        self.sidebarGroup.setLineWidth(1)
+        self.sidebarLayout = QVBoxLayout()
+
+        # Setup sidebar for filtering
+        self.sideBar = sidebar.Sidebar(self.config, self.sidebarLayout, self.search.setSearchFilters)
+
+        self.sidebarLayout.setAlignment(Qt.AlignTop)
+        self.sidebarGroup.setLayout(self.sidebarLayout)
+
+    def createSearchAndTable(self):
+        self.searchAndTableSplit = QSplitter(Qt.Vertical)
+
+        self.searchGroup = QGroupBox()
+        self.searchLayout = QHBoxLayout()
+
+        #Search split top part
+        self.searchBoxLabel = QLabel("Search:")
+        self.searchLayout.addWidget(self.searchBoxLabel)
+
+        self.searchBoxLineEdit = QLineEdit()
+
+        self.searchLayout.addWidget(self.searchBoxLineEdit)
+
+        self.searchBoxOKButton = QPushButton("&OK")
+        self.searchBoxOKButton.clicked.connect(self.okButtonClicked)
+        self.searchBoxLineEdit.returnPressed.connect(self.okButtonClicked)
+        self.searchLayout.addWidget(self.searchBoxOKButton)
+        self.searchGroup.setLayout(self.searchLayout)
+
+        # Table split bottom part
+        self.table = MyTableView()
+
+        # Add parts to the split
+        self.searchAndTableSplit.addWidget(self.searchGroup)
+        self.searchAndTableSplit.addWidget(self.table)
+
+        self.searchAndTableSplit.setSizes([50, 450])
+
+        # Make top split fixed and bottom split variable
+        self.searchAndTableSplit.setStretchFactor(0, 0)
+        self.searchAndTableSplit.setStretchFactor(1, 1)
+
+    def writeSettings(self):
+        qSettings = QSettings("Wooni005", "Tracker-Search")
+        qSettings.beginGroup("mainWindow")
+        qSettings.setValue("size", self.size())
+        qSettings.setValue("pos", self.pos())
+
+    def readSettings(self):
+        qSettings = QSettings("Wooni005", "Tracker-Search")
+        qSettings.beginGroup("mainWindow")
+        qSettings.setValue("size", self.size())
+        qSettings.setValue("pos", self.pos())
+
+    def closeEvent(self, event):
+        # event is a QCloseEvent
+        self.writeSettings()
 
 
-# Event when moving/resizing the application window
-def geometryChangedEvent(event):
-    config.saveConfigfile()
-    multiListbox.adaptColumns()
+class MyTableView(QTableView):
+    def __init__(self):
+        super(MyTableView, self).__init__()
+
+    def resizeEvent(self, event):
+        """ Resize all sections to content and user interactive """
+
+        super(QTableView, self).resizeEvent(event)
+        header = self.horizontalHeader()
+        for column in range(header.count()):
+            header.setSectionResizeMode(column, QHeaderView.ResizeToContents)
+            width = header.sectionSize(column)
+            header.setSectionResizeMode(column, QHeaderView.Interactive)
+            header.resizeSection(column, width)
 
 
-# Event callback when clicking on Ok button to search
-def okButtonClickCallback():
-    searchStr = win.searchBox.get()
-    search.searchItems(searchStr)
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    app.setApplicationName("Search Tracker")
 
+    # winSize = config.get('geometry', 'size').toByteArray()
+    # print("winSize" + winSize[0])
+    # geometry = QRect(winSize[0], winSize[1], winSize[2], winSize[3])
+    # rootWindow.geometry.restoreGeometry(geometry)
 
-# Event callback when pressing enter in search field
-def keypressCallback(event):
-    if event.char == '\r':
-        searchStr = win.searchBox.get()
-        print("Enter pressed: %s" % searchStr)
-        search.searchItems(searchStr)
-    else:
-        print("Other key pressed:" + event)
-
-
-root = tk.Tk(className="Tracker Search")
-root.title("Tracker Search")
-config = config.Config(root)
-img = tk.Image("photo", file="/home/arjan/Documenten/Gitea/Python/tracker_search/icons/tracker_search.png")
-root.tk.call('wm', 'iconphoto', root._w, img)
-
-# Recall stored window geometry settings
-root.geometry(config.config.get('geometry', 'size'))
-
-# Tkinter theme
-# root.style = ttk.Style()
-# root.style.theme_use("classic")
-
-# Setup event callbacks:
-root.bind('<Return>', keypressCallback) # When pressing return in search field
-root.bind("<Configure>", geometryChangedEvent) # When window is resized
-
-win = window.Window(okButtonClickCallback)
-
-# Setup the multicolumn ListBox
-multiListbox = multi_listbox.MultiListbox(win.mainFrame)
-
-# Setup the tracker search
-search = search.Search(multiListbox.tree)
-
-# Setup the sidebars to filter results
-sideBar = sidebar.Sidebar(config, win, search.setSearchFilters)
-
-if __name__ == '__main__': 
-    root.mainloop()
+    rootWindow = MainWindow()
+    rootWindow.readSettings()
+    rootWindow.show()
+    sys.exit(app.exec_())
