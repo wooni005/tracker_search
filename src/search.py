@@ -3,7 +3,6 @@ gi.require_version("Tracker", "2.0")
 from gi.repository import Tracker
 import os
 import sys
-# import time
 from PySide2.QtGui import QStandardItem
 
 

@@ -48,7 +48,7 @@ class Sidebar:
         self.applySearchFilter()
 
     def applySearchFilter(self):
-        print("Apply the new filter on the search window")
+        # print("Apply the new filter on the search window")
 
         self.docFilter.clear() # Reset filter
         for button in docCheckButtons:

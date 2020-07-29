@@ -57,9 +57,9 @@ class MainWindow(QMainWindow):
         self.settings.setValue("pos", self.pos())
         QMainWindow.closeEvent(self, event)
 
-    def okButtonClicked(self):
+    def enterOrOkButtonClicked(self):
         self.searchBoxLineEdit.text()
-        print("Search for:" + self.searchBoxLineEdit.text())
+        # print("Search for:" + self.searchBoxLineEdit.text())
         self.search.searchItems(self.searchBoxLineEdit.text())
 
     def setupModel(self):
@@ -85,16 +85,10 @@ class MainWindow(QMainWindow):
         self.mainLayout.setStretchFactor(1, 1)
 
         self.table.setModel(self.model)
-        self.table.setColumnWidth(0, 50)
-        self.table.setColumnWidth(2, 50)
-        self.table.setColumnWidth(4, 50)
-        self.table.setColumnWidth(5, 50)
 
         # Table setup, which column is variable and which is fixed
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.setSortingEnabled(True)
-
-        # self.table.horizontalHeader().setResizeMode(0, QHeaderView.Stretch)
 
         self.setCentralWidget(self.mainLayout)
 
@@ -129,8 +123,8 @@ class MainWindow(QMainWindow):
         self.searchLayout.addWidget(self.searchBoxLineEdit)
 
         self.searchBoxOKButton = QPushButton("&OK")
-        self.searchBoxOKButton.clicked.connect(self.okButtonClicked)
-        self.searchBoxLineEdit.returnPressed.connect(self.okButtonClicked)
+        self.searchBoxOKButton.clicked.connect(self.enterOrOkButtonClicked)
+        self.searchBoxLineEdit.returnPressed.connect(self.enterOrOkButtonClicked)
         self.searchLayout.addWidget(self.searchBoxOKButton)
         self.searchGroup.setLayout(self.searchLayout)
 
@@ -173,29 +167,40 @@ class MyTableView(QTableView):
 
     def resizeEvent(self, event):
         """ Resize all sections to content and user interactive """
-        print("resizeEvent")
-        # Header[0], width=300, stretch=False) #Filename
-        # Header[1], minwidth=100, stretch=True) #Snippet
-        # Header[2], width=40, stretch=False)  #Type
-        # Header[3], width=60, stretch=False)  #Size
-        # Header[4], width=160, stretch=False) #Modified
-        # Header[5], minwidth=100, stretch=True) #Path
+        tableWidth = event.size().width()
+        # print("resizeEvent: width=%d" % tableWidth)
 
         columnSize = [300, 0, 40, 60, 160, 0]
+        # [0], width=300, flexible=False)  #Filename
+        # [1], width=0,   flexible=True)   #Snippet
+        # [2], width=40,  flexible=False)  #Type
+        # [3], width=60,  flexible=False)  #Size
+        # [4], width=160, flexible=False)  #Modified
+        # [5], width=0,   flexible=True)   #Path
+
+        # Calculate the total fixed column width
+        totalFixedWidth = sum(columnSize)
+        # There are 2 flexible columns, so divide by 2
+        restWidth = (tableWidth - totalFixedWidth) / 2
+        if restWidth < 0:
+            restWidth = 0
+        print("FixedWith=%d restWidth=%d" % (totalFixedWidth, restWidth))
+
         super(QTableView, self).resizeEvent(event)
         header = self.horizontalHeader()
         for column in range(header.count()):
             if columnSize[column] != 0:
-                # header.setSectionResizeMode(column, QHeaderView.ResizeToContents)
-                # width = header.sectionSize(column)
-                # header.setSectionResizeMode(column, QHeaderView.Interactive)
-                # header.resizeSection(column, width)
                 header.setSectionResizeMode(column, QHeaderView.Interactive)
                 header.resizeSection(column, columnSize[column])
             else:
+                header.setSectionResizeMode(column, QHeaderView.ResizeToContents)
+                contentWidth = header.sectionSize(column)
                 header.setSectionResizeMode(column, QHeaderView.Interactive)
-                # width = header.sectionSize(column)
-                # header.minimumSectionSize(100)
+                if contentWidth < restWidth:
+                    width = contentWidth
+                else:
+                    width = restWidth
+                header.resizeSection(column, width)
 
 
 if __name__ == '__main__':
