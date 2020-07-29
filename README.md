@@ -22,12 +22,12 @@ Replace "/home/arjan" with your own user path.
 
 ## Configuration
 
-The settings.conf file is located in `~/.config/tracker_search`
+The `settings.conf` file is located in `~/.config/tracker_search` and will be generated when the application starts for the first time.
 
-These are the default setting. The [General] section contains the latest position and size of the window. This will be automatically updated.
+These are the default setting. The `[General]` section contains the latest position and size of the window. This will be automatically updated.
 
-The [documentTypes] section contains all extensions for filtering the results.
-The [searchAreas] section contains all paths for filtering the results
+The `[documentTypes]` section contains all extensions for filtering the results.
+The `[searchAreas]` section contains all paths for filtering the results
 
 Keep in mind that if you remove or add something to these sections, you need to adapt the size also.
 
@@ -59,9 +59,7 @@ size=5
 size=3
 ```
 
-## Tracker info
-
-Tracker internals: [Projects/Tracker/Documentation/Debugging - GNOME Wiki!](https://wiki.gnome.org/Projects/Tracker/Documentation/Debugging)
+# Tracker internals
 
 It is possible to change detailed settings of Tracker with the **dconf-editor** in **/org/freedesktop/tracker/miner/files**:
 
@@ -121,3 +119,5 @@ $ tracker daemon -t
 # Start the indexer with debug info
 /usr/libexec/tracker-miner-fs -v 3
 ```
+
+Info: [Projects/Tracker/Documentation/Debugging - GNOME Wiki!](https://wiki.gnome.org/Projects/Tracker/Documentation/Debugging)
