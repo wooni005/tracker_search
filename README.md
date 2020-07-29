@@ -18,7 +18,7 @@ $ git clone https://github.com/wooni005/tracker_search.git
 Start Settings and select "Keyboard Shortcuts", click on the "+" button at the bottom and fill in the following settings to start Tracker Search with the Super-F key.
 Replace "/home/arjan" with your own user path.
 
-![](/home/arjan/Documenten/Gitea/Python/tracker_search/img/Set-Custom-Shortcut.png)
+![](img/Set-Custom-Shortcut.png)
 
 ## Configuration
 
