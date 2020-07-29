@@ -52,13 +52,15 @@ class Search:
             else:
                 filesize = int(filesize) / 1024
             item.append("%dkB" % (filesize))     #3-filesize
-            item.append(url)                     #4-url
+
             #Cleanup modifiedDate
             modifiedDate = modifiedDate.replace("T", " ")
             modifiedDate = modifiedDate.replace("Z", "")
-            item.append(modifiedDate)            #5-modifiedDate
+            item.append(modifiedDate)            #4-modifiedDate
 
-            item[4] = url[7:] # Remove "file://" from url
+            # Append to item and remove "file://" from url
+            item.append(url[7:])                     #5-url
+
             self.searchIndex.append(item)
         self.displayIndex()
         # end = time.time()
@@ -77,8 +79,8 @@ class Search:
 
         for item in self.searchIndex:
             #item[2]: docFilter
-            #item[4]: url
-            if (item[2] in self.docFilter) and any(x in item[4] for x in self.areaFilter):
+            #item[5]: url
+            if (item[2] in self.docFilter) and any(x in item[5] for x in self.areaFilter):
                 row = []
                 for v in item:
                     row.append(QStandardItem(v))

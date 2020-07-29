@@ -35,17 +35,15 @@ class Sidebar:
         #Place the checkbuttons in the sidebar
         for docTypeName in self.documentTypes:
             docType = self.documentTypes[docTypeName]
-            print("%s: %s" % (docTypeName, docType))
+            # print("%s: %s" % (docTypeName, docType))
             docCheckButtons.append(check_button.classCheckButton(self.layout, docType, docTypeName, self.applySearchFilter))
 
         self.layout.addWidget(QHLine())
 
         for searchArea in self.searchAreas:
             searchAreaPath = self.searchAreas[searchArea]
-            print("%s: %s" % (searchArea, searchAreaPath))
+            # print("%s: %s" % (searchArea, searchAreaPath))
             searchAreaCheckButtons.append(check_button.classCheckButton(self.layout, searchAreaPath, searchArea, self.applySearchFilter))
-
-        print(self.searchAreas)
 
         self.applySearchFilter()
 
@@ -70,31 +68,29 @@ class Sidebar:
         size = self.settings.beginReadArray("documentTypes")
         if size == 0:
             print("No array found: Init with default settings")
-            print("size: %d" % size)
             self.settings.endArray()
 
             self.generateDefaultConfigSettings()
             size = self.settings.beginReadArray("documentTypes")
-        print("size: %d" % size)
 
         for i in range(size):
             self.settings.setArrayIndex(i)
             docTypeName = self.settings.value("name")
             docType = self.settings.value("type")
-            print("%d - %s: %s" % (i + 1, docTypeName, docType))
+            # print("%d - %s: %s" % (i + 1, docTypeName, docType))
             self.documentTypes[docTypeName] = docType
         self.settings.endArray()
-        print(self.documentTypes)
+        # print(self.documentTypes)
 
         size = self.settings.beginReadArray("searchAreas")
         for i in range(size):
             self.settings.setArrayIndex(i)
             searchArea = self.settings.value("name")
             searchAreaPath = self.settings.value("path")
-            print("%d - %s: %s" % (i + 1, searchArea, searchAreaPath))
+            # print("%d - %s: %s" % (i + 1, searchArea, searchAreaPath))
             self.searchAreas[searchArea] = searchAreaPath
         self.settings.endArray()
-        print(self.searchAreas)
+        # print(self.searchAreas)
 
     def generateDefaultConfigSettings(self):
         # Generate config settings with defaults
