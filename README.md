@@ -108,7 +108,7 @@ $ tracker daemon -s
 Test how to search the index:
 
 ```bash
-tracker search -fs linux
+$ tracker search -fs linux
 ```
 
 Tracker-fs indexer manual restart:
@@ -117,7 +117,7 @@ Tracker-fs indexer manual restart:
 # Stop the tracker daemon
 $ tracker daemon -t
 # Start the indexer with debug info
-/usr/libexec/tracker-miner-fs -v 3
+$ /usr/libexec/tracker-miner-fs -v 3
 ```
 
 Info: [Projects/Tracker/Documentation/Debugging - GNOME Wiki!](https://wiki.gnome.org/Projects/Tracker/Documentation/Debugging)
