@@ -2,13 +2,11 @@
 import time
 import sys
 
-from PySide2.QtCore import Qt, QAbstractTableModel, QRect, QSettings
+from PySide2.QtCore import Qt, QAbstractTableModel, QRect, QSize, QPoint, QSettings
 from PySide2.QtGui import QStandardItemModel, QStandardItem
 from PySide2.QtWidgets import (QApplication, QMenu, QMainWindow, QHeaderView, QSplitter, QTableView, QGroupBox, QFrame, QVBoxLayout, QCheckBox, QHBoxLayout, QLabel, QLineEdit, QPushButton)
 
-from src import config
 from src import search
-from src import window
 from src import sidebar
 
 
@@ -24,7 +22,12 @@ class MainWindow(QMainWindow):
         quitAction = fileMenu.addAction("E&xit")
         quitAction.setShortcut("Ctrl+Q")
 
-        self.config = config.Config()
+        self.settings = QSettings("tracker_search", "settings")
+
+        # Initial window size/pos last saved. Use default values for first time
+        self.resize(self.settings.value("size", QSize(800, 600)))
+        self.move(self.settings.value("pos", QPoint(50, 50)))
+
         self.setupModel()
 
         # Setup the tracker search
@@ -41,15 +44,11 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Tracker Search")
         self.searchBoxLineEdit.setFocus()
 
-    def resizeEvent(self, event):
-        super(MainWindow, self).resizeEvent(event)
-        print("Window is resized:" + str(self.geometry()))
-        self.config.saveConfigfile({'size': self.rootWindow.geometry().getRect()})
-
-    def moveEvent(self, event):
-        super(MainWindow, self).moveEvent(event)
-        print("Window is moved:" + str(self.geometry()))
-        self.config.saveConfigfile({'size': self.rootWindow.geometry().getRect()})
+    def closeEvent(self, event):
+        # Write window size and position to config file
+        self.settings.setValue("size", self.size())
+        self.settings.setValue("pos", self.pos())
+        QMainWindow.closeEvent(self, event)
 
     def okButtonClicked(self):
         self.searchBoxLineEdit.text()
@@ -83,8 +82,6 @@ class MainWindow(QMainWindow):
         # self.table.setColumnWidth(2, 50)
         # self.table.setColumnWidth(4, 50)
         # self.table.setColumnWidth(5, 50)
-        self.resize(800, 500)
-        self.mainLayout.setSizes([150, 650])
 
         # Table setup, which column is variable and which is fixed
         self.table.horizontalHeader().setStretchLastSection(True)
@@ -106,7 +103,7 @@ class MainWindow(QMainWindow):
         self.sidebarLayout = QVBoxLayout()
 
         # Setup sidebar for filtering
-        self.sideBar = sidebar.Sidebar(self.config, self.sidebarLayout, self.search.setSearchFilters)
+        self.sideBar = sidebar.Sidebar(self.settings, self.sidebarLayout, self.search.setSearchFilters)
 
         self.sidebarLayout.setAlignment(Qt.AlignTop)
         self.sidebarGroup.setLayout(self.sidebarLayout)
@@ -144,22 +141,6 @@ class MainWindow(QMainWindow):
         self.searchAndTableSplit.setStretchFactor(0, 0)
         self.searchAndTableSplit.setStretchFactor(1, 1)
 
-    def writeSettings(self):
-        qSettings = QSettings("Wooni005", "Tracker-Search")
-        qSettings.beginGroup("mainWindow")
-        qSettings.setValue("size", self.size())
-        qSettings.setValue("pos", self.pos())
-
-    def readSettings(self):
-        qSettings = QSettings("Wooni005", "Tracker-Search")
-        qSettings.beginGroup("mainWindow")
-        qSettings.setValue("size", self.size())
-        qSettings.setValue("pos", self.pos())
-
-    def closeEvent(self, event):
-        # event is a QCloseEvent
-        self.writeSettings()
-
 
 class MyTableView(QTableView):
     def __init__(self):
@@ -181,12 +162,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setApplicationName("Search Tracker")
 
-    # winSize = config.get('geometry', 'size').toByteArray()
-    # print("winSize" + winSize[0])
-    # geometry = QRect(winSize[0], winSize[1], winSize[2], winSize[3])
-    # rootWindow.geometry.restoreGeometry(geometry)
-
     rootWindow = MainWindow()
-    rootWindow.readSettings()
+
     rootWindow.show()
     sys.exit(app.exec_())
