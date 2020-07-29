@@ -24,12 +24,13 @@ class MainWindow(QMainWindow):
         quitAction = fileMenu.addAction("E&xit")
         quitAction.setShortcut("Ctrl+Q")
 
-        appIcon = QIcon("/home/arjan/Documenten/Gitea/Python/tracker_search/icons/tracker_search.png")
+        mainpath = os.path.dirname(os.path.abspath(__file__))
+        iconpath = os.path.join(mainpath, "icons/tracker_search.png")
+        appIcon = QIcon(iconpath)
         self.setWindowIcon(appIcon)
 
         self.settings = QSettings("tracker_search", "settings")
 
-        #TODO: Application Icon
         # Initial window size/pos last saved. Use default values for first time
         self.resize(self.settings.value("size", QSize(800, 600)))
         self.move(self.settings.value("pos", QPoint(50, 50)))
