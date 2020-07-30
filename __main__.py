@@ -6,13 +6,22 @@ import subprocess
 
 from PySide2.QtCore import Qt, QAbstractTableModel, QRect, QSize, QPoint, QSettings
 from PySide2.QtGui import QStandardItemModel, QStandardItem, QIcon
-from PySide2.QtWidgets import (QApplication, QMenu, QMainWindow, QHeaderView, QSplitter, QTableView, QGroupBox, QFrame, QVBoxLayout, QCheckBox, QHBoxLayout, QLabel, QLineEdit, QPushButton)
+from PySide2.QtWidgets import (QApplication, QMenu, QMainWindow, QMessageBox, QHeaderView, QSplitter, QTableView, QGroupBox, QFrame, QVBoxLayout, QCheckBox, QHBoxLayout, QLabel, QLineEdit, QPushButton)
 
 from src import search
 from src import sidebar
 
+__version__ = "0.1"
+
+ABOUT_MSG = "<p>Tracker Search</p>" \
+        "<p>Author: Arjan Wooning</p>" \
+        "<p>Website: <a href='https://arjan.wooning.cz/'>arjan.wooning.cz</a></p>" \
+        "<p>Version: %s</p>" % __version__
+
 
 class MainWindow(QMainWindow):
+    global ABOUT_MSG
+
     def __init__(self):
         super(MainWindow, self).__init__()
 
@@ -22,7 +31,9 @@ class MainWindow(QMainWindow):
         # saveAction = fileMenu.addAction("&Save As...")
         # saveAction.setShortcut("Ctrl+S")
         quitAction = fileMenu.addAction("E&xit")
-        quitAction.setShortcut("Ctrl+Q")
+        quitAction.setShortcut("Ctrl+X")
+        helpMenu = QMenu("&Help", self)
+        aboutAction = helpMenu.addAction("&About")
 
         mainpath = os.path.dirname(os.path.abspath(__file__))
         iconpath = os.path.join(mainpath, "icons/tracker_search.png")
@@ -45,11 +56,17 @@ class MainWindow(QMainWindow):
         # openAction.triggered.connect(self.openFile)
         # saveAction.triggered.connect(self.saveFile)
         quitAction.triggered.connect(QApplication.instance().quit)
+        aboutAction.triggered.connect(self.informationMessage)
 
         self.menuBar().addMenu(fileMenu)
+        self.menuBar().addMenu(helpMenu)
         self.statusBar()
         self.setWindowTitle("Tracker Search")
         self.searchBoxLineEdit.setFocus()
+
+    def informationMessage(self):    
+        reply = QMessageBox.information(self,
+            "About", ABOUT_MSG)
 
     def closeEvent(self, event):
         # Write window size and position to config file

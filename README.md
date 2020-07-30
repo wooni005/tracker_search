@@ -1,6 +1,6 @@
 # Tracker Search
 
-[Tracker Search](https://github.com/wooni005/tracker_search) is a full text search Qt application. The [Gnome Tracker](https://wiki.gnome.org/Projects/Tracker) is a filesystem indexer which currently shipped with [Gnome 3](https://www.gnome.org/gnome-3/). The Gnome Tracker is used by Nautilus, but none of the Gnome tools is able to perform a full text search in the index. But that is exactly what [Tracker Search](https://github.com/wooni005/tracker_search) does
+[Tracker Search](https://github.com/wooni005/tracker_search) is a full text search Qt application. The [Gnome Tracker](https://wiki.gnome.org/Projects/Tracker) is a file system indexer which currently shipped with [Gnome 3](https://www.gnome.org/gnome-3/). The Gnome Tracker is used by Nautilus, but none of the Gnome tools is able to perform a full text search in the index. But that's exactly what [Tracker Search](https://github.com/wooni005/tracker_search) is able to.
 
  ![Tracker Search Icon](icons/tracker_search.png)
 
@@ -10,7 +10,7 @@ To use Tracker Search is simple. Just enter your search term into the Search fie
 
 In the search expression it's possible to use:
 
-* AND, OR
+* Booleans: AND, OR
 
 * Parenthesis: ()
 
@@ -21,6 +21,19 @@ In the search expression it's possible to use:
 ![Tracker Search Screenshot](img/Screenshot-Tracker-Search.png)
 
 ## Installation
+
+The Tracker Search tool is multi-platform and runs on every system where Gnome Tracker is running. Check if Gnome Tracker is available on your system:
+
+```bash
+$ tracker daemon
+Store:
+29 Jul 2020, 22:33:04:  ✗     Store                   - Unavailable
+
+Miners:
+29 Jul 2020, 22:33:04:  ✗     RSS/ATOM Feeds          - Not running or is a disabled plugin
+29 Jul 2020, 22:33:04:  ✓     File System             - Idle 
+29 Jul 2020, 22:33:04:  ✗     Extractor               - Not running or is a disabled plugin
+```
 
 To run Tracker Search we need Python 3 and PySide2 (Qt), to install PySide2, do the following:
 
@@ -83,7 +96,11 @@ size=5
 size=3
 ```
 
-# Tracker internals
+## Directories / searchAreas
+
+Gnome Tracker is used normally only on the local file system. But it is also possible to index network drives. In my configuration I've the /Nas directory mounted with cifs to my Synology NAS and is Gnome Tracker able to index directories from the NAS. See the next paragraph "Tracker internals" how to add the /Nas directory
+
+# Gnome Tracker internals
 
 It is possible to change detailed settings of Tracker with the **dconf-editor** in **/org/freedesktop/tracker/miner/files**:
 
@@ -92,7 +109,7 @@ It is possible to change detailed settings of Tracker with the **dconf-editor** 
 * Possible to change the directories, which needs to be indexed: **index-recursive-directories**, for example: 
   ['&DESKTOP', '/home/arjan/Documenten/Gitea/Notities/Notities/', '&MUSIC', '&PICTURES', '&VIDEOS', '/home/arjan/Nas/Tijdschriften']
 
-* In **Nautilus->Preferences->Search & Preview**->**Search**: **Alle locations**
+* In **Nautilus->Preferences->Search & Preview**->**Search**: **All locations**
 
 Status of the tracker can be seen with:
 
@@ -107,7 +124,7 @@ Miners:
 29 Jul 2020, 22:33:04:  ✗     Extractor               - Not running or is a disabled plugin
 ```
 
-Also possible to reindex all data with a hard reset of the index:
+Also possible to re-index all data with a hard reset of the index:
 
 ```bash
 $ tracker reset --hard
