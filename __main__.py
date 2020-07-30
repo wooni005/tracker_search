@@ -14,9 +14,9 @@ from src import sidebar
 __version__ = "0.1"
 
 ABOUT_MSG = "<p>Tracker Search</p>" \
-        "<p>Author: Arjan Wooning</p>" \
-        "<p>Website: <a href='https://arjan.wooning.cz/'>arjan.wooning.cz</a></p>" \
-        "<p>Version: %s</p>" % __version__
+    "<p>Author: Arjan Wooning</p>" \
+    "<p>Website: <a href='https://arjan.wooning.cz/'>arjan.wooning.cz</a></p>" \
+    "<p>Version: %s</p>" % __version__
 
 
 class MainWindow(QMainWindow):
@@ -64,9 +64,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Tracker Search")
         self.searchBoxLineEdit.setFocus()
 
-    def informationMessage(self):    
-        reply = QMessageBox.information(self,
-            "About", ABOUT_MSG)
+    def informationMessage(self):
+        QMessageBox.information(self, "About", ABOUT_MSG)
 
     def closeEvent(self, event):
         # Write window size and position to config file
@@ -201,7 +200,7 @@ class MyTableView(QTableView):
         restWidth = (tableWidth - totalFixedWidth) / 2
         if restWidth < 0:
             restWidth = 0
-        print("FixedWith=%d restWidth=%d" % (totalFixedWidth, restWidth))
+        # print("FixedWith=%d restWidth=%d" % (totalFixedWidth, restWidth))
 
         super(QTableView, self).resizeEvent(event)
         header = self.horizontalHeader()
