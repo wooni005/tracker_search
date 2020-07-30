@@ -2,9 +2,33 @@
 
 [Tracker Search](https://github.com/wooni005/tracker_search) is a full text search Qt application. The [Gnome Tracker](https://wiki.gnome.org/Projects/Tracker) is a filesystem indexer which currently shipped with [Gnome 3](https://www.gnome.org/gnome-3/). The Gnome Tracker is used by Nautilus, but none of the Gnome tools is able to perform a full text search in the index. But that is exactly what [Tracker Search](https://github.com/wooni005/tracker_search) does
 
- ![](icons/tracker_search.png)
+ ![Tracker Search Icon](icons/tracker_search.png)
+
+## Usage
+
+To use Tracker Search is simple. Just enter your search term into the Search field and click the OK button or enter. After that you can filter your results by unmark one of the options in the left sidebar. The sidebar contains file extensions (Type column) and directories/search areas (Path column).
+
+In the search expression it's possible to use:
+
+* AND, OR
+
+* Parenthesis: ()
+
+* Asterisks: *
+
+* etc
+
+![Tracker Search Screenshot](img/Screenshot-Tracker-Search.png)
 
 ## Installation
+
+To run Tracker Search we need Python 3 and PySide2 (Qt), to install PySide2, do the following:
+
+```bash
+$ pip install PySide2
+```
+
+To install Tracker Search, you can do the following instructions, or install it in another directory:
 
 ```bash
 $ cd
@@ -13,7 +37,7 @@ $ cd Python
 $ git clone https://github.com/wooni005/tracker_search.git
 ```
 
-**Set a custom shortcut in Gnome**
+**Set a custom keyboard shortcut in Gnome**
 
 Start Settings and select "Keyboard Shortcuts", click on the "+" button at the bottom and fill in the following settings to start Tracker Search with the Super-F key.
 Replace "/home/arjan" with your own user path.
