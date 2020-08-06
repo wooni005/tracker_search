@@ -13,7 +13,7 @@ from src import sidebar
 
 __version__ = "0.1"
 
-ABOUT_MSG = "<p>Tracker Search</p>" \
+ABOUT_MSG = "<p><b>Tracker Search</b></p>" \
     "<p>Author: Arjan Wooning</p>" \
     "<p>Website: <a href='https://arjan.wooning.cz/'>arjan.wooning.cz</a></p>" \
     "<p>Version: %s</p>" \
@@ -167,13 +167,34 @@ class MyTableView(QTableView):
 
         # Get an event when clicking on the table (row)
         self.doubleClicked.connect(self.onTableClicked)
+        self.clicked.connect(self.onTableClicked)
 
         # When double click a cell/row, don't go into edit mode
         self.setEditTriggers(QTableView.NoEditTriggers)
 
+    def keyPressEvent(self, event):
+        super(QTableView, self).keyPressEvent(event)
+        indexes = self.selectionModel().selectedRows()
+        for index in sorted(indexes):
+            self.selectedRow = index.row()
+        if (event.key() == Qt.Key_Return) or (event.key() == Qt.Key_Enter):
+            url = self.dataModel.index(self.selectedRow, 5).data()
+            self.openFileWithDefaultApplication(url)
+        # elif event.key == Qt.Key_Down:
+        #     print("KeyDown")
+        # elif event.key == Qt.Key_Up:
+        #     print("KeyUp")
+        # else:
+        #     print(event.key)
+
     def onTableClicked(self, event):
-        clickedRow = event.row()
-        url = self.dataModel.index(clickedRow, 5).data()
+        self.selectedRow = event.row()
+        print(self.selectedRow)
+
+    def onTableDoubleClicked(self, event):
+        self.selectedRow = event.row()
+        print(self.selectedRow)
+        url = self.dataModel.index(self.selectedRow, 5).data()
         self.openFileWithDefaultApplication(url)
 
     def openFileWithDefaultApplication(self, file):
