@@ -20,6 +20,12 @@ In the search expression it's possible to use:
 
 ![Tracker Search Screenshot](img/Screenshot-Tracker-Search.png)
 
+### Keyboard shortcuts
+
+* Ctrl-X: exit
+
+* Ctrl-E: set focus to search box
+
 ## Installation
 
 The Tracker Search tool is multi-platform and runs on every system where Gnome Tracker is running. Check if Gnome Tracker is available on your system:
