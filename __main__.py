@@ -166,7 +166,7 @@ class MyTableView(QTableView):
         self.setSelectionBehavior(QTableView.SelectRows)
 
         # Get an event when clicking on the table (row)
-        self.doubleClicked.connect(self.onTableClicked)
+        self.doubleClicked.connect(self.onTableDoubleClicked)
         self.clicked.connect(self.onTableClicked)
 
         # When double click a cell/row, don't go into edit mode
@@ -189,11 +189,11 @@ class MyTableView(QTableView):
 
     def onTableClicked(self, event):
         self.selectedRow = event.row()
-        print(self.selectedRow)
+        # print("SingleClick:" + str(self.selectedRow))
 
     def onTableDoubleClicked(self, event):
         self.selectedRow = event.row()
-        print(self.selectedRow)
+        # print("DoubleClick:" + str(self.selectedRow))
         url = self.dataModel.index(self.selectedRow, 5).data()
         self.openFileWithDefaultApplication(url)
 
