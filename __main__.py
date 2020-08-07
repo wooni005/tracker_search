@@ -5,8 +5,8 @@ import os
 import subprocess
 
 from PySide2.QtCore import Qt, QAbstractTableModel, QRect, QSize, QPoint, QSettings
-from PySide2.QtGui import QStandardItemModel, QStandardItem, QIcon
-from PySide2.QtWidgets import (QApplication, QMenu, QMainWindow, QMessageBox, QHeaderView, QSplitter, QTableView, QGroupBox, QFrame, QVBoxLayout, QCheckBox, QHBoxLayout, QLabel, QLineEdit, QPushButton)
+from PySide2.QtGui import QStandardItemModel, QStandardItem, QIcon, QKeySequence
+from PySide2.QtWidgets import (QApplication, QMenu, QMainWindow, QMessageBox, QHeaderView, QSplitter, QTableView, QGroupBox, QFrame, QVBoxLayout, QCheckBox, QHBoxLayout, QLabel, QLineEdit, QPushButton, QShortcut)
 
 from src import search
 from src import sidebar
@@ -63,6 +63,13 @@ class MainWindow(QMainWindow):
         self.menuBar().addMenu(helpMenu)
         self.statusBar()
         self.setWindowTitle("Tracker Search")
+        self.setSearchBoxFocus()
+
+        shortcut = QShortcut(QKeySequence("Ctrl+E"), self)
+        shortcut.activated.connect(self.setSearchBoxFocus)
+
+    def setSearchBoxFocus(self):
+        # print("setSearchBoxFocus")
         self.searchBoxLineEdit.setFocus()
 
     def informationMessage(self):
@@ -174,18 +181,15 @@ class MyTableView(QTableView):
 
     def keyPressEvent(self, event):
         super(QTableView, self).keyPressEvent(event)
+        # Determine the current selected table row
         indexes = self.selectionModel().selectedRows()
         for index in sorted(indexes):
             self.selectedRow = index.row()
+
+        # Open the file when hitting enter or return
         if (event.key() == Qt.Key_Return) or (event.key() == Qt.Key_Enter):
             url = self.dataModel.index(self.selectedRow, 5).data()
             self.openFileWithDefaultApplication(url)
-        # elif event.key == Qt.Key_Down:
-        #     print("KeyDown")
-        # elif event.key == Qt.Key_Up:
-        #     print("KeyUp")
-        # else:
-        #     print(event.key)
 
     def onTableClicked(self, event):
         self.selectedRow = event.row()
