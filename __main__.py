@@ -11,11 +11,11 @@ from PySide2.QtWidgets import (QApplication, QMenu, QMainWindow, QMessageBox, QH
 from src import search
 from src import sidebar
 
-__version__ = "0.1"
+__version__ = "0.1.1"
 
 ABOUT_MSG = "<p><b>Tracker Search</b></p>" \
     "<p>Author: Arjan Wooning</p>" \
-    "<p>Website: <a href='https://arjan.wooning.cz/'>arjan.wooning.cz</a></p>" \
+    "<p>Website: <a href='https://arjan.wooning.cz/linux-search-tracker-full-text-search-tool-gnome-desktop/'>arjan.wooning.cz</a></p>" \
     "<p>Version: %s</p>" \
     "<p>Released under the <a href='https://www.gnu.org/licenses/gpl-3.0.html'>GPL-3.0 License</a></p>"  % __version__
 
