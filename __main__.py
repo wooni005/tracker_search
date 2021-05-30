@@ -33,7 +33,7 @@ class MainWindow(QMainWindow):
         # saveAction = fileMenu.addAction("&Save As...")
         # saveAction.setShortcut("Ctrl+S")
         quitAction = fileMenu.addAction("E&xit")
-        quitAction.setShortcut("Ctrl+X")
+        quitAction.setShortcut("Ctrl+Q")
         helpMenu = QMenu("&Help", self)
         aboutAction = helpMenu.addAction("&About")
 
@@ -86,6 +86,7 @@ class MainWindow(QMainWindow):
         self.searchBoxLineEdit.text()
         # print("Search for:" + self.searchBoxLineEdit.text())
         self.search.searchItems(self.searchBoxLineEdit.text())
+        self.setWindowTitle(self.searchBoxLineEdit.text() + ' - Tracker Search')
 
     def setupModel(self):
         self.model = QStandardItemModel(0, 6, self)
