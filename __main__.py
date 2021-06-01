@@ -3,6 +3,7 @@ import time
 import sys
 import os
 import subprocess
+from urllib.parse import unquote
 
 from PySide2.QtCore import Qt, QAbstractTableModel, QRect, QSize, QPoint, QSettings
 from PySide2.QtGui import QStandardItemModel, QStandardItem, QIcon, QKeySequence
@@ -32,7 +33,7 @@ class MainWindow(QMainWindow):
         # saveAction = fileMenu.addAction("&Save As...")
         # saveAction.setShortcut("Ctrl+S")
         quitAction = fileMenu.addAction("E&xit")
-        quitAction.setShortcut("Ctrl+X")
+        quitAction.setShortcut("Ctrl+Q")
         helpMenu = QMenu("&Help", self)
         aboutAction = helpMenu.addAction("&About")
 
@@ -85,6 +86,7 @@ class MainWindow(QMainWindow):
         self.searchBoxLineEdit.text()
         # print("Search for:" + self.searchBoxLineEdit.text())
         self.search.searchItems(self.searchBoxLineEdit.text())
+        self.setWindowTitle(self.searchBoxLineEdit.text() + ' - Tracker Search')
 
     def setupModel(self):
         self.model = QStandardItemModel(0, 6, self)
@@ -189,7 +191,7 @@ class MyTableView(QTableView):
         # Open the file when hitting enter or return
         if (event.key() == Qt.Key_Return) or (event.key() == Qt.Key_Enter):
             url = self.dataModel.index(self.selectedRow, 5).data()
-            self.openFileWithDefaultApplication(url)
+            self.openFileWithDefaultApplication(unquote(url))
 
     def onTableClicked(self, event):
         self.selectedRow = event.row()
@@ -199,7 +201,7 @@ class MyTableView(QTableView):
         self.selectedRow = event.row()
         # print("DoubleClick:" + str(self.selectedRow))
         url = self.dataModel.index(self.selectedRow, 5).data()
-        self.openFileWithDefaultApplication(url)
+        self.openFileWithDefaultApplication(unquote(url))
 
     def openFileWithDefaultApplication(self, file):
         if sys.platform == 'linux':
